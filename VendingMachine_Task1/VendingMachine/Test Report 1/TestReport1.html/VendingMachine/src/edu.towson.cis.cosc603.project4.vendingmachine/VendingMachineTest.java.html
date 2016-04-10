@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../.resources/report.gif" type="image/gif"/><title>VendingMachineTest.java</title><link rel="stylesheet" href="../../../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../.sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">VendingMachine (Apr 8, 2016 6:32:12 PM)</a> &gt; <a href="../../index.html" class="el_group">VendingMachine</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">edu.towson.cis.cosc603.project4.vendingmachine</a> &gt; <span class="el_source">VendingMachineTest.java</span></div><h1>VendingMachineTest.java</h1><pre class="source lang-java linenums">package edu.towson.cis.cosc603.project4.vendingmachine;
+
+import static org.junit.Assert.*;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+<span class="fc" id="L12">public class VendingMachineTest {</span>
+	
+	// out test machine	
+	VendingMachine machine;
+	// items for testing
+	VendingMachineItem [] items;
+	// number of item in the test
+<span class="fc" id="L19">	int itemNum = 4;</span>
+	// code for insertion 
+<span class="fc" id="L21">	String [] codes = {VendingMachine.A_CODE, VendingMachine.B_CODE,</span>
+<span class="fc" id="L22">						VendingMachine.C_CODE,VendingMachine.D_CODE};</span>
+
+	/**
+	 * set up all needed items and the machine
+	 * @throws Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+<span class="fc" id="L30">		machine = new VendingMachine();</span>
+<span class="fc" id="L31">		items = new VendingMachineItem[itemNum];</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">		for (int i = 0; i &lt; items.length; i++) {</span>
+<span class="fc" id="L33">			items[i] = new VendingMachineItem(&quot;name&quot; + i, (i + 1) * 10.0);</span>
+		}	
+<span class="fc" id="L35">	}</span>
+
+	/**
+	 * clean machine and all items
+	 * @throws Exception
+	 */
+	@After
+	public void tearDown() throws Exception {
+<span class="fc" id="L43">		machine = null;</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">		for (int i = 0; i &lt; items.length; i++) {</span>
+<span class="fc" id="L45">			items[i] = null;</span>
+		}
+<span class="fc" id="L47">	}</span>
+
+/*	@Test
+	public void testGetSlotIndex() throws NoSuchMethodException, 
+						SecurityException, IllegalAccessException, 
+						IllegalArgumentException, InvocationTargetException {	
+		Method method = 
+				VendingMachine.class.getDeclaredMethod(&quot;getSlotIndex&quot;, 
+				String.class);
+		
+		method.setAccessible(true);
+		for (int i = 0; i &lt; codes.length; i++) {
+			
+			assertEquals(i, (int) method.invoke(machine, codes[i]));
+		}
+	}
+	*/
+	
+	@Test (expected = InvocationTargetException.class)
+	public void testGetSlotIndex() throws NoSuchMethodException, 
+						SecurityException, IllegalAccessException, 
+						IllegalArgumentException, InvocationTargetException {	
+<span class="fc" id="L69">		Method method = </span>
+<span class="fc" id="L70">				VendingMachine.class.getDeclaredMethod(&quot;getSlotIndex&quot;, </span>
+<span class="fc" id="L71">				String.class);</span>
+		
+<span class="fc" id="L73">		method.setAccessible(true);		</span>
+			
+<span class="nc" id="L75">		method.invoke(machine, &quot;bad case&quot;);</span>
+		
+<span class="nc" id="L77">	}</span>
+	
+	
+	
+	/**
+	 * Test addItem method
+	 */
+	@Test 
+	public void testAddItem() {	
+		VendingMachineItem item;
+<span class="fc bfc" id="L87" title="All 2 branches covered.">		for (int i = 0; i &lt; codes.length; i++) {</span>
+			// put item into machine
+<span class="fc" id="L89">			machine.addItem(items[i], codes[i]);</span>
+			// get it out
+<span class="fc" id="L91">			item = machine.getItem(codes[i]);</span>
+			// test its correctness
+<span class="fc" id="L93">			assertSame(items[i], item);</span>
+		}			
+<span class="fc" id="L95">	}</span>
+	
+	@Test (expected = VendingMachineException.class)
+	public void testAddItemException(){		
+<span class="fc bfc" id="L99" title="All 2 branches covered.">		for (int i = 0; i &lt; codes.length; i++) {</span>
+			// put item into machine
+<span class="fc" id="L101">			machine.addItem(items[i], codes[i]);			</span>
+		}	
+		// add a item to catch exception
+<span class="nc" id="L104">		machine.addItem(items[0], codes[0]);</span>
+<span class="nc" id="L105">	}</span>
+	
+	/**
+	 * push all item into the machine
+	 */
+	private void addItemToMachine(){
+<span class="fc bfc" id="L111" title="All 2 branches covered.">		for (int i = 0; i &lt; codes.length; i++) {</span>
+<span class="fc" id="L112">			machine.addItem(items[i], codes[i]);</span>
+		}
+<span class="fc" id="L114">	}</span>
+	
+	/**
+	 * Test removeItem method
+	 */
+	@Test
+	public void testRemoveItem(){
+		// add all items
+<span class="fc" id="L122">		addItemToMachine();</span>
+		// a temp item
+		VendingMachineItem item1, item2;
+		
+<span class="fc bfc" id="L126" title="All 2 branches covered.">		for (int i = 0; i &lt; codes.length; i++) {</span>
+			// get it out
+<span class="fc" id="L128">			item1 = machine.getItem(codes[i]);</span>
+			// remove it
+<span class="fc" id="L130">			item2 = machine.removeItem(codes[i]);</span>
+			// check its correctness
+<span class="fc" id="L132">			assertSame(item1, item2);</span>
+			// check whether the slot is empty or not 
+<span class="fc" id="L134">			assertNull(machine.getItem(codes[i]));</span>
+		}
+<span class="fc" id="L136">	}</span>
+	
+	@Test (expected = VendingMachineException.class)
+	public void testRemoveItemException(){
+<span class="nc" id="L140">		machine.removeItem(codes[0]);</span>
+<span class="nc" id="L141">	}</span>
+	
+	
+	/**
+	 * Test insertItem method
+	 */
+	@Test
+	public void testInsertMoney(){
+		// sample amount
+<span class="fc" id="L150">		double amount = 200.0;</span>
+		// get it current balance
+<span class="fc" id="L152">		double oldBalance = machine.getBalance();</span>
+		// insert new amount
+<span class="fc" id="L154">		machine.insertMoney(amount);</span>
+		// test its correctness
+<span class="fc" id="L156">		assertEquals(amount + oldBalance, machine.getBalance(), 0.0);</span>
+<span class="fc" id="L157">	}</span>
+	
+	@Test (expected = VendingMachineException.class)
+	public void testInsertMoneyException(){
+		// sample amount
+<span class="fc" id="L162">		double amount = -200.0;</span>
+<span class="nc" id="L163">		machine.insertMoney(amount);</span>
+<span class="nc" id="L164">	}</span>
+	
+	/**
+	 * Test getBalance method
+	 */
+	@Test
+	public void testGetBalance(){
+		// initial balance is zero
+<span class="fc" id="L172">		assertEquals(0.0, machine.getBalance(), 0.0);		</span>
+<span class="fc" id="L173">	}</span>
+	
+	/**
+	 * Test makePurchase method
+	 */
+	@Test
+	public void testMakePurchase(){
+		// add all items
+<span class="fc" id="L181">		addItemToMachine();</span>
+		// we cannot purchase any item right now because the balance is 0 
+<span class="fc" id="L183">		assertFalse(machine.makePurchase(codes[0]));</span>
+		
+		// set a purchase code 
+<span class="fc" id="L186">		String code = codes[0];</span>
+		// get the time which has that code
+<span class="fc" id="L188">		VendingMachineItem item = machine.getItem(code);</span>
+		// create a amount
+<span class="fc" id="L190">		double amount = item.getPrice() + 100;</span>
+		// insert it 		
+<span class="fc" id="L192">		machine.insertMoney(amount);</span>
+		// test the correctness
+<span class="fc" id="L194">		assertTrue(machine.makePurchase(codes[0]));</span>
+		// whether the balance is reduce correctly 
+<span class="fc" id="L196">		assertEquals(amount - item.getPrice(), machine.getBalance(), 0.0);</span>
+		// whether the slot is empty now
+<span class="fc" id="L198">		assertNull(machine.getItem(code));</span>
+<span class="fc" id="L199">	}</span>
+	
+	/**
+	 * Test returnChange method
+	 */
+	@Test
+	public void testReturnChange (){
+		// temp amount 
+<span class="fc" id="L207">		double amount = 200.0;</span>
+		// add it to the machine
+<span class="fc" id="L209">		machine.insertMoney(amount);</span>
+		// get current balance
+<span class="fc" id="L211">		double balance = machine.getBalance();</span>
+		// get change
+<span class="fc" id="L213">		double change = machine.returnChange();</span>
+		
+		// test its correctness
+<span class="fc" id="L216">		assertEquals(balance, change, 0.0);		</span>
+<span class="fc" id="L217">		assertEquals(0.0, machine.getBalance(), 0.0);</span>
+<span class="fc" id="L218">	}</span>
+		
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.6.201602180812</span>VendingMachine (Apr 8, 2016 6:32:12 PM)</div></body></html>
